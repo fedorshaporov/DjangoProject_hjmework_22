@@ -51,12 +51,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_project',
-        'USER': 'postgres',
-        'PASSWORD': '0608',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.postgresql',  # Или 'django.db.backends.postgresql_psycopg2', если требуется
+        'NAME': 'DjangoProjectHW',                   # Имя вашей базы данных
+        'USER': 'postgres',                           # Имя пользователя PostgreSQL
+        'PASSWORD': '0608',                           # Пароль пользователя PostgreSQL
+        'HOST': 'localhost',                          # Хост (обычно 'localhost')
+        'PORT': '5432',                               # Порт (по умолчанию 5432)
     }
 }
 
