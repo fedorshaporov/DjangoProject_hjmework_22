@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}  <!-- Загрузите тег для статических файлов -->
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Последние продукты</h1>
+    <div class="row">
+        {% for product in latest_products %}
+            <div class="col-md-4">  <!-- Используем 4 колонки для отображения карточек -->
+                <div class="card mb-4 shadow-sm">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'default-image.png' %}{% endif %}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description|truncatechars:100 }}</p> <!-- Обрезаем описание до 100 символов -->
+                        <p class="card-text"><strong>Цена:</strong> {{ product.price }} руб.</p>
+                        <a href="{% url 'catalog:product_detail' product.id %}" class="btn btn-primary">Посмотреть</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

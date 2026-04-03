@@ -1,0 +1,41 @@
+[
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "Смартфон",
+      "description": "Современный смартфон с высокой производительностью.",
+      "image": "",
+      "category": 1,
+      "price": 699.99,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "Рубашка",
+      "description": "Стильная рубашка для повседневной носки.",
+      "image": "",
+      "category": 2,
+      "price": 29.99,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name": "Роман",
+      "description": "Интересный роман о приключениях и открытиях.",
+      "image": "",
+      "category": 3,
+      "price": 15.99,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
+    }
+  }
+]
