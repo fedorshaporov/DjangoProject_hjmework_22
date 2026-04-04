@@ -8,5 +8,11 @@ class Post(models.Model):
     is_published = models.BooleanField(default=False)  # Признак публикации
     views_count = models.PositiveIntegerField(default=0)  # Количество просмотров
 
+    class Meta:
+        ordering = ['-created_at']  # Сортировка по дате создания (последние записи первыми)
+        verbose_name = 'Blog Post'  # Человекочитаемое имя в единственном числе
+        verbose_name_plural = 'Blog Posts'  # Человекочитаемое имя во множественном числе
+        db_table = 'blog_post'  # Имя таблицы в базе данных
+
     def __str__(self):
         return self.title
