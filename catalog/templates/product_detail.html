@@ -15,8 +15,33 @@
             <p><strong>Категория:</strong> {{ product.category.name }}</p>
             <p><strong>Дата создания:</strong> {{ product.created_at }}</p>
             <p><strong>Дата обновления:</strong> {{ product.updated_at }}</p>
+
+            <!-- Кнопка для редактирования продукта -->
+            <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-secondary">Редактировать</a>
+
+            <!-- Форма для удаления продукта -->
+            <form action="{% url 'catalog:product_delete' product.pk %}" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-danger" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить этот продукт?');">
+            </form>
         </div>
     </div>
+
+    <!-- Кнопка для возврата к списку продуктов -->
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-info">Список продуктов</a>
+
+    <!-- Кнопка для добавления нового продукта -->
+    <a href="{% url 'catalog:product_create' %}" class="btn btn-success">Добавить продукт</a>
+
+    <!-- Кнопка для возврата на главную страницу -->
     <a href="{% url 'catalog:home' %}" class="btn btn-primary">Назад к каталогу</a>
+
+    {% if messages %}
+    <div class="alert alert-info mt-3">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
