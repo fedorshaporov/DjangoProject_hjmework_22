@@ -1,27 +1,33 @@
 from django.shortcuts import render, get_object_or_404
+from django.views import View
+from django.views.generic import TemplateView, DetailView
+from catalog.models import Product
 
-from catalog.models import Product, Category
+class HomeView(TemplateView):
+    template_name = 'home.html'
 
-def home(request):
-    # Получаем последние 5 продуктов
-    latest_products = Product.objects.order_by('-created_at')[:5]
-    return render(request, 'home.html', {'latest_products': latest_products})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['latest_products'] = Product.objects.order_by('-created_at')[:5]
+        return context
 
-def product_detail(request, product_id):
-    # Получаем продукт по ID
-    product = get_object_or_404(Product, id=product_id)
-    return render(request, 'product_detail.html', {'product': product})
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'product_detail.html'
+    context_object_name = 'product'
 
-def contacts(request):
-    if request.method == "POST":
+class ContactsView(View):
+    template_name = 'contacts.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         message = request.POST.get('message')
 
-        # Проверка на None или пустые значения (более безопасно)
         if not name or not phone or not message:
-            return render(request, 'contacts.html', {'error': 'Пожалуйста, заполните все поля.'})
+            return render(request, self.template_name, {'error': 'Пожалуйста, заполните все поля.'})
 
         return render(request, 'contact_success.html', {'name': name})
-
-    return render(request, 'contacts.html')
