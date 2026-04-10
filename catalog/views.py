@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin  # Импортируем для ограничения доступа
 from catalog.models import Product
 from catalog.forms import ProductForm  # Импортируйте созданную вами форму
-from django.core.exceptions import ValidationError
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -24,8 +24,7 @@ class ProductListView(ListView):
     template_name = 'product_list.html'  # Убедитесь, что этот шаблон существует
     context_object_name = 'products'
 
-
-class ProductCreateView(View):
+class ProductCreateView(LoginRequiredMixin, View):
     template_name = 'product_form.html'
 
     def get(self, request, *args, **kwargs):
@@ -36,11 +35,11 @@ class ProductCreateView(View):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('catalog:product_list')  # Убедитесь, что 'product_list' правильно ссылается на маршрут
+            messages.success(request, 'Продукт успешно добавлен.')
+            return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
         return render(request, self.template_name, {'form': form})
 
-
-class ProductUpdateView(View):
+class ProductUpdateView(LoginRequiredMixin, View):
     template_name = 'product_form.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -53,10 +52,11 @@ class ProductUpdateView(View):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('catalog:product_list')  # Убедитесь, что это правильно
+            messages.success(request, 'Продукт успешно обновлен.')
+            return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
         return render(request, self.template_name, {'form': form})
 
-class ProductDeleteView(View):
+class ProductDeleteView(LoginRequiredMixin, View):
     template_name = 'product_confirm_delete.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -67,7 +67,7 @@ class ProductDeleteView(View):
         product = get_object_or_404(Product, pk=pk)
         product.delete()
         messages.success(request, 'Продукт успешно удален.')
-        return redirect('product_list')
+        return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
 
 class ContactsView(View):
     template_name = 'contacts.html'
@@ -83,4 +83,5 @@ class ContactsView(View):
         if not name or not phone or not message:
             return render(request, self.template_name, {'error': 'Пожалуйста, заполните все поля.'})
 
+        messages.success(request, 'Ваше сообщение успешно отправлено!')
         return render(request, 'contact_success.html', {'name': name})

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Вход</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Формат вывода формы -->
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    <p class="mt-3">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+</div>
+{% endblock %}
