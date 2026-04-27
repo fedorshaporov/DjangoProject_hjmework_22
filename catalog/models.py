@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name="Наименование")
@@ -21,10 +22,20 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
 
+    # Новое поле для статуса публикации
+    STATUS_CHOICES = (
+        ('draft', 'Черновик'),
+        ('published', 'Опубликован'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', verbose_name="Статус публикации")
+
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ["name"]
+        permissions = (
+            ('can_unpublish_product', 'Может отменять публикацию продукта'),
+        )
 
     def __str__(self):
         return self.name

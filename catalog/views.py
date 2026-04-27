@@ -34,7 +34,9 @@ class ProductCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            product = form.save(commit=False)  # Не сразу сохранять
+            product.status = 'draft'  # Устанавливаем статус по умолчанию на черновик
+            product.save()  # Теперь сохраняем продукт
             messages.success(request, 'Продукт успешно добавлен.')
             return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
         return render(request, self.template_name, {'form': form})

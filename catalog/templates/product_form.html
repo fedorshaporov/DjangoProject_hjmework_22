@@ -6,8 +6,9 @@
 {% block content %}
 <div class="container mt-4">
     <h1>{% if form.instance.pk %}Редактировать{% else %}Добавить{% endif %} продукт</h1>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" class="mt-4">
         {% csrf_token %}
+
         <div class="form-group">
             <label for="{{ form.name.id_for_label }}">Название</label>
             {{ form.name|add_class:"form-control" }}  <!-- Применяем класс Bootstrap -->
@@ -59,4 +60,4 @@
 
     <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary mt-3">Назад к списку</a>
 </div>
-{% endblock %}n btn-secondary">Назад к списку</a>
+{% endblock %}ку</a>
