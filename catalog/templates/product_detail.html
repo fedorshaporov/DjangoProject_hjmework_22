@@ -16,23 +16,23 @@
             <p><strong>Дата создания:</strong> {{ product.created_at }}</p>
             <p><strong>Дата обновления:</strong> {{ product.updated_at }}</p>
 
-            <!-- Кнопка для редактирования продукта -->
-            <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-secondary">Редактировать</a>
-
-            <!-- Форма для удаления продукта -->
-            <form action="{% url 'catalog:product_delete' product.pk %}" method="POST" style="display:inline;">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-danger" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить этот продукт?');">
-            </form>
+            <!-- Проверка прав доступа к редактированию и удалению -->
+            {% if user.is_authenticated %}
+                {% if user == product.owner or user.has_perm('catalog.can_unpublish_product') %}
+                    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-secondary">Редактировать</a>
+                    <form action="{% url 'catalog:product_delete' product.pk %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-danger" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить этот продукт?');">
+                    </form>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 
-    <!-- Кнопка для возврата к списку продуктов -->
+    <!-- Кнопки для навигации -->
     <div class="mt-3">
         <a href="{% url 'catalog:product_list' %}" class="btn btn-info">Список продуктов</a>
-        <!-- Кнопка для добавления нового продукта -->
         <a href="{% url 'catalog:product_create' %}" class="btn btn-success">Добавить продукт</a>
-        <!-- Кнопка для возврата на главную страницу -->
         <a href="{% url 'catalog:home' %}" class="btn btn-primary">Назад к каталогу</a>
     </div>
 

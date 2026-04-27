@@ -1,6 +1,7 @@
+from django.conf import settings  # Импортируем настройки
 from django.db import models
-from django.contrib.auth.models import User
 
+# Модель категории
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name="Наименование")
     description = models.TextField(blank=True, verbose_name="Описание")
@@ -8,16 +9,17 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
-        ordering = ["name"]  # Упорядочить категории по имени
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
+# Модель продукта
 class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name="Наименование")
     description = models.TextField(blank=True, verbose_name="Описание")
-    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Изображение")  # Изменено
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', verbose_name="Категория")
+    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Изображение")
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='products', verbose_name="Категория")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена за покупку")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
@@ -28,6 +30,9 @@ class Product(models.Model):
         ('published', 'Опубликован'),
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', verbose_name="Статус публикации")
+
+    # Обновление поля owner
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE, related_name='products', verbose_name="Владелец")
 
     class Meta:
         verbose_name = "Продукт"

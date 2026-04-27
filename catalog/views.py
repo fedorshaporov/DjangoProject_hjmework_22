@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin  # Импортируем для ограничения доступа
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin  # Импортируем для ограничения доступа
 from catalog.models import Product
 from catalog.forms import ProductForm  # Импортируйте созданную вами форму
 
@@ -34,14 +34,15 @@ class ProductCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            product = form.save(commit=False)  # Не сразу сохранять
+            product = form.save(commit=False)  # Не сразу сохраняем
+            product.owner = request.user  # Устанавливаем владельца продукта
             product.status = 'draft'  # Устанавливаем статус по умолчанию на черновик
-            product.save()  # Теперь сохраняем продукт
+            product.save()  # Сохраняем продукт
             messages.success(request, 'Продукт успешно добавлен.')
             return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
         return render(request, self.template_name, {'form': form})
 
-class ProductUpdateView(LoginRequiredMixin, View):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'product_form.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -58,7 +59,11 @@ class ProductUpdateView(LoginRequiredMixin, View):
             return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
         return render(request, self.template_name, {'form': form})
 
-class ProductDeleteView(LoginRequiredMixin, View):
+    def test_func(self):
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        return self.request.user == product.owner or self.request.user.has_perm('catalog.can_unpublish_product')
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'product_confirm_delete.html'
 
     def get(self, request, pk, *args, **kwargs):
@@ -70,6 +75,10 @@ class ProductDeleteView(LoginRequiredMixin, View):
         product.delete()
         messages.success(request, 'Продукт успешно удален.')
         return redirect('catalog:product_list')  # Убедитесь, что URL правильно ссылается
+
+    def test_func(self):
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        return self.request.user == product.owner or self.request.user.has_perm('catalog.delete_product')
 
 class ContactsView(View):
     template_name = 'contacts.html'
