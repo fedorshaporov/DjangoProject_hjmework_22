@@ -1,6 +1,8 @@
+import os.path
 from pathlib import Path
 
-from django.conf.global_settings import STATICFILES_DIRS
+from django.conf.global_settings import STATICFILES_DIRS, MEDIA_URL, MEDIA_ROOT, EMAIL_USE_SSL, LOGIN_REDIRECT_URL, \
+    CACHES
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -17,7 +19,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'catalog'
+    'django_extensions',
+    'catalog',
+    'blog',
+    'widget_tweaks',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -35,10 +41,11 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [],  # Если у вас есть подкаталоги с шаблонами, вы можете указать их здесь
+        'APP_DIRS': True,  # Убедитесь, что это True для поиска шаблонов в app
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -51,8 +58,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',  # Или 'django.db.backends.postgresql_psycopg2', если требуется
+        'NAME': 'DjangoProjectHW',                   # Имя вашей базы данных
+        'USER': 'postgres',                           # Имя пользователя PostgreSQL
+        'PASSWORD': '0608',                           # Пароль пользователя PostgreSQL
+        'HOST': 'localhost',                          # Хост (обычно 'localhost')
+        'PORT': '5432',                               # Порт (по умолчанию 5432)
     }
 }
 
@@ -83,3 +94,34 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = (BASE_DIR / 'static',)
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'  # Замените на ваш SMTP-сервер
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'fedorshaporov@yandex.ru'  # Ваш адрес электронной почты
+EMAIL_HOST_PASSWORD = 'imvuvgeqaahhhejf'   # Ваш пароль для почты
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Использовать как отправителя
+
+LOGIN_REDIRECT_URL ='catalog:product_list'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # Укажите адрес, который соответствует вашему Redis
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',  # Это должно быть здесь
+        }
+    }
+}
+
+# (опционально) Установите кэш для сессий
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'

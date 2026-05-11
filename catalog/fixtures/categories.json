@@ -1,0 +1,26 @@
+[
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "name": "Электроника",
+      "description": "Все, что связано с электроникой"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "Одежда",
+      "description": "Модная одежда для всех"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+      "name": "Книги",
+      "description": "Разнообразные книги и литературные произведения"
+    }
+  }
+]
