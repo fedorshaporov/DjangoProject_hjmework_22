@@ -1,7 +1,8 @@
 import os.path
 from pathlib import Path
 
-from django.conf.global_settings import STATICFILES_DIRS, MEDIA_URL, MEDIA_ROOT, EMAIL_USE_SSL, LOGIN_REDIRECT_URL
+from django.conf.global_settings import STATICFILES_DIRS, MEDIA_URL, MEDIA_ROOT, EMAIL_USE_SSL, LOGIN_REDIRECT_URL, \
+    CACHES
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -110,3 +111,17 @@ EMAIL_HOST_PASSWORD = 'imvuvgeqaahhhejf'   # Ваш пароль для почт
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Использовать как отправителя
 
 LOGIN_REDIRECT_URL ='catalog:product_list'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # Укажите адрес, который соответствует вашему Redis
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',  # Это должно быть здесь
+        }
+    }
+}
+
+# (опционально) Установите кэш для сессий
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
