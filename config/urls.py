@@ -4,9 +4,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Заканчивается на /
-    path('', include('catalog.urls', namespace='catalog')),  # Заканчивается на /
-    path('blog/', include('blog.urls', namespace='blog')),  # Заканчивается на /
+    path('admin/', admin.site.urls),  # URL для административной панели
+    path('users/', include('users.urls', namespace='users')),  # Namespace для URL пользователей
+    path('', include('catalog.urls', namespace='catalog')),  # Основные маршруты каталога
+    path('blog/', include('blog.urls', namespace='blog')),  # URL для блога (если есть)
 ]
 
 # Добавляем обработку медиафайлов в режиме отладки

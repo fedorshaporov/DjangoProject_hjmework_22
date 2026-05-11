@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Продукты в категории{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Продукты в категории</h1>
+    {% if products %}
+        <ul class="list-group">
+            {% for product in products %}
+                <li class="list-group-item">
+                    <h4>{{ product.name }}</h4>
+                    <p>{{ product.description }}</p>
+                    <p><strong>Цена:</strong> {{ product.price }} руб.</p>
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-info">Смотреть детали</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-warning">Нет продуктов в данной категории.</div>
+    {% endif %}
+</div>
+{% endblock %}
